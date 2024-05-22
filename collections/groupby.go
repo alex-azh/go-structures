@@ -1,7 +1,9 @@
 package collections
 
+import "unsafe"
+
 func GroupBy[TValue, TObject comparable](object *TObject, v *TValue, arr []*TObject) map[TValue][]*TObject {
-	getField := GetFieldByPtr(object, v)
+	getField := getFieldByPtr(object, v)
 
 	switch len(arr) {
 	case 0:
@@ -10,14 +12,10 @@ func GroupBy[TValue, TObject comparable](object *TObject, v *TValue, arr []*TObj
 		return map[TValue][]*TObject{getField(arr[0]): {arr[0]}}
 	}
 
-	result := make(map[TValue][]*TObject, len(arr)*30/200)
+	result := make(map[TValue][]*TObject, len(arr)*4/10)
 	for i := 0; i < len(arr); i++ {
 		v := getField(arr[i])
-		if slice, ok := result[v]; ok {
-			result[v] = append(slice, arr[i])
-		} else {
-			result[v] = []*TObject{arr[i]}
-		}
+		result[v] = append(result[v], arr[i])
 	}
 	return result
 }
